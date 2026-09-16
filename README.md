@@ -149,7 +149,7 @@ dataset/
 
 SWaT is an industrial control-system dataset collected from a scaled water-treatment testbed.
 
-Because SWaT has specific dataset access and distribution conditions, users should obtain the dataset from the original dataset provider.
+Because SWaT has specific dataset access and distribution conditions, users should obtain the dataset from the original dataset provider: https://www.sutd.edu.sg/itrust/itrust-labs/datasets/dataset-characteristics/swat/.
 
 After obtaining the dataset, place the required files in:
 
