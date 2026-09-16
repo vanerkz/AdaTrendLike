@@ -1,10 +1,10 @@
 import argparse
-from utils.utils import *
 import torch
 import os
 from solver import Solver
 import random
 import json
+import numpy as np
 
 def set_seed(seed=42):
     random.seed(seed)
@@ -31,8 +31,7 @@ def main(config):
     if (not os.path.exists(config.model_save_path)):
         os.mkdir(config.model_save_path)
 
-    precisions, recalls, f_scores, rocs,prrocs,valiscores = [], [], [], [],[],[]
-    thres,thresmean,meanstd,thresmedian=[],[],[],[]
+    precisions, recalls, f_scores, rocs,valiscores = [], [], [], [],[]
     randomseedlist=[1000,1001,1002,1004]
 
     for i in randomseedlist:
@@ -43,7 +42,7 @@ def main(config):
         valiscores.append(valiscore)
         config.mode='test'
         solver = Solver(vars(config))
-        precision, recall, f_score, roc,prroc = solver.test()
+        precision, recall, f_score, roc = solver.test()
         precisions.append(precision)
         recalls.append(recall)
         f_scores.append(f_score)
@@ -51,7 +50,6 @@ def main(config):
 
         results = {
             'valiscores': tensor_to_list(valiscores),
-            'meanstd': tensor_to_list(meanstd),
             'f_scores': tensor_to_list(f_scores),
             'rocs': tensor_to_list(rocs),
         }

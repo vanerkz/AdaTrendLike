@@ -1,10 +1,7 @@
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 import numpy as np
 import os
-from utils.func import save_dataset_inputs, k_means_clustering
-from utils.utils import *
 from model.AdaTrendLike import AdaTrendLike
 from data_factory.data_loader import get_loader_segment
 from tqdm import tqdm
@@ -27,7 +24,6 @@ class TrendLike(nn.Module):
         true_x=true_x.detach().cpu().reshape(-1,Fea)
         true_trend=true_trend.detach().cpu().reshape(-1,Fea)
         y_label=y_label.detach().cpu().reshape(-1)  
-   
         windowroll=L
         for l in range(0,L*B):
             l_min = max(l - windowroll, 0)   
@@ -85,67 +81,66 @@ class Solver(object):
         if not os.path.exists(path):
             os.makedirs(path)
     
-        for ii in range (1):
-            best_val = float("inf")
-            patience = 2 
+        best_val = float("inf")
+        patience = 2 
 
-            for epoch in range(self.num_epochs):
-                self.train_loader,_ = get_loader_segment(self.data_path, batch_size=self.batch_size, win_size=self.win_size, step=self.stride,
-                                                    mode='train',
+        for epoch in range(self.num_epochs):
+            self.train_loader,_ = get_loader_segment(self.data_path, batch_size=self.batch_size, win_size=self.win_size, step=self.stride,
+                                                mode='train',
+                                                dataset=self.dataset,val_ratio=self.val_ratio,noise_ratio=self.noise_ratio)
+            self.val_loader,_ = get_loader_segment(self.data_path, batch_size=self.batch_size, win_size=self.win_size, step=self.stride,
+                                                    mode='val',
                                                     dataset=self.dataset,val_ratio=self.val_ratio,noise_ratio=self.noise_ratio)
-                self.val_loader,_ = get_loader_segment(self.data_path, batch_size=self.batch_size, win_size=self.win_size, step=self.stride,
-                                                        mode='val',
-                                                        dataset=self.dataset,val_ratio=self.val_ratio,noise_ratio=self.noise_ratio)
 
-                self.model.train()
-                epoch_loss = []
-                start_time = time.time()
-                for i, (true_x, _) in enumerate(tqdm(self.train_loader)):
+            self.model.train()
+            epoch_loss = []
+            start_time = time.time()
+            for i, (true_x, _) in enumerate(tqdm(self.train_loader)):
+                true_x = true_x.float().to(self.device)
+                self.optimizer.zero_grad()
+                rec_d, true_trend, mu_trend, scale_tril, pi_hat = self.model(true_x)
+                loss = self.loss_function(rec_d, true_x, mu_trend, true_trend, scale_tril, pi_hat)
+                loss.backward()
+                self.optimizer.step()
+                epoch_loss.append(loss.item())
+            train_loss = sum(epoch_loss) / len(epoch_loss)
+            torch.cuda.synchronize()  # Make sure all GPU ops are done
+            end_time = time.time()
+            print(f"Epoch time: {end_time - start_time:.3f} seconds")
+
+            # =======================
+            #       VALIDATION
+            # =======================
+            self.model.eval()
+            val_LL_list = []
+
+            with torch.no_grad():
+                for i, (true_x, _) in enumerate(tqdm(self.val_loader)):
                     true_x = true_x.float().to(self.device)
-                    self.optimizer.zero_grad()
                     rec_d, true_trend, mu_trend, scale_tril, pi_hat = self.model(true_x)
                     loss = self.loss_function(rec_d, true_x, mu_trend, true_trend, scale_tril, pi_hat)
-                    loss.backward()
-                    self.optimizer.step()
-                    epoch_loss.append(loss.item())
-                train_loss = sum(epoch_loss) / len(epoch_loss)
-                torch.cuda.synchronize()  # Make sure all GPU ops are done
-                end_time = time.time()
-                print(f"Epoch time: {end_time - start_time:.3f} seconds")
-
-                # =======================
-                #       VALIDATION
-                # =======================
-                self.model.eval()
-                val_LL_list = []
-
-                with torch.no_grad():
-                    for i, (true_x, _) in enumerate(tqdm(self.val_loader)):
-                        true_x = true_x.float().to(self.device)
-                        rec_d, true_trend, mu_trend, scale_tril, pi_hat = self.model(true_x)
-                        loss = self.loss_function(rec_d, true_x, mu_trend, true_trend, scale_tril, pi_hat)
-                        val_LL_list.append(loss.detach().reshape(-1))
-                val_scores = torch.cat(val_LL_list, dim=0)
-                val_mean = val_scores.mean().item()
-                print(
-                    f"Epoch [{epoch+1}/{self.num_epochs}] | "
-                    f"Train Loss: {train_loss:.4f} | "
-                    f"Val_LL: {val_mean:.4f} | "
-                )
-                if val_mean< best_val:
-                    best_val = val_mean
-                    wait = 0
-                    print("Best Saved")
-                    torch.save(
-                        self.model.state_dict(),
-                        self.filepath
-                        )
-                else:
-                    wait += 1
-                    print(f"Early stopping wait at {wait}")
-                    if wait >= patience:
-                        print(f"Early stopping triggered at epoch {epoch+1}")
-                        break
+                    val_LL_list.append(loss.detach().reshape(-1))
+            val_scores = torch.cat(val_LL_list, dim=0)
+            val_mean = val_scores.mean().item()
+            print(
+                f"Epoch [{epoch+1}/{self.num_epochs}] | "
+                f"Train Loss: {train_loss:.4f} | "
+                f"Val_LL: {val_mean:.4f} | "
+            )
+            if val_mean< best_val:
+                best_val = val_mean
+                wait = 0
+                print("Best Saved")
+                torch.save(
+                    self.model.state_dict(),
+                    self.filepath
+                    )
+            else:
+                wait += 1
+                print(f"Early stopping wait at {wait}")
+                if wait >= patience:
+                    print(f"Early stopping triggered at epoch {epoch+1}")
+                    break
         return val_mean
 
     def test(self):
@@ -194,8 +189,8 @@ class Solver(object):
                 rec_d_list.append(rec_d.detach().cpu())
                 mu_trend_list.append(mu_trend.detach().cpu())
                 scale_tril_list.append(scale_tril.detach().cpu())
-        
-        # Flattened 1D arrays
+
+
         A_score_np = np.concatenate(A_score_list, axis=0).ravel()
         test_y_label_np = np.concatenate(test_y_label, axis=0).ravel()
         gt = test_y_label_np.astype(int)
@@ -220,5 +215,5 @@ class Solver(object):
         with open(f'{fullpath}{today}_result_'+str(self.dataset)+'.txt', 'a') as file:
             file.write(seqout)
 
-        return precision, recall, f_score, roc,prroc
+        return precision, recall, f_score, roc
 

@@ -1,8 +1,6 @@
 import numpy as np
 from numpy.lib.stride_tricks import sliding_window_view
-
 import torch
-from sklearn.metrics import roc_auc_score
 
 def get_bestF1(lab, scores, PA=False):
     scores = scores.numpy() if torch.is_tensor(scores) else scores
