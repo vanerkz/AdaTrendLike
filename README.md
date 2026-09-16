@@ -5,7 +5,9 @@ Official implementation of:
 **AdaTrendLike: Adaptive Hierarchical Detrending and Trend Likelihood Scoring for Time Series Anomaly Detection**
 
 **Authors:** Van Kwan Zhi Koh, Songnan Lin, Zhiping Lin, Bihan Wen
+
 **Venue:** IEEE Transactions on Industrial Informatics
+
 **Paper:** [IEEE Xplore](https://ieeexplore.ieee.org/abstract/document/11684397)
 
 ---
