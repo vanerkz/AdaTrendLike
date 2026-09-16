@@ -1,0 +1,398 @@
+# AdaTrendLike
+
+Official implementation of:
+
+**AdaTrendLike: Adaptive Hierarchical Detrending and Trend Likelihood Scoring for Time Series Anomaly Detection**
+
+**Authors:** Van Kwan Zhi Koh, Songnan Lin, Zhiping Lin, Bihan Wen
+**Venue:** IEEE Transactions on Industrial Informatics
+**Paper:** [IEEE Xplore](https://ieeexplore.ieee.org/abstract/document/11684397)
+
+---
+
+## Overview
+
+AdaTrendLike is an unsupervised framework for multivariate time-series anomaly detection based on **adaptive hierarchical detrending and trend likelihood scoring**.
+
+The key idea is to explicitly model the trend component of a time series and evaluate whether the observed trend is likely under the learned normal trend distribution.
+
+Unlike methods that primarily rely on point-wise reconstruction errors, AdaTrendLike models the underlying temporal trend and derives an anomaly score from the likelihood of the observed trend.
+
+The framework consists of three main components:
+
+1. **Standardization Embedding**
+2. **Adaptive Detrending**
+3. **Trend Estimation and Trend Likelihood Scoring**
+
+The resulting model learns the distribution of normal trends and uses the corresponding likelihood to identify anomalous temporal behavior.
+
+---
+
+# Repository Structure
+
+```text
+AdaTrendLike/
+│
+├── dataset/
+│   ├── SMD/
+│   ├── PSM/
+│   ├── SWaT/
+│   ├── MSL/
+│   └── SMAP/
+│
+├── checkpoints/
+├── results/
+│
+├── Start.sh
+├── requirements.txt
+└── README.md
+```
+
+The benchmark datasets should be placed under the `dataset/` directory.
+
+---
+
+# Requirements
+
+We recommend creating a dedicated Python environment.
+
+For example:
+
+```bash
+conda create -n adatrendlike python=3.10
+conda activate adatrendlike
+```
+
+Then install the required packages:
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+# Dataset Preparation
+
+The experiments use the following commonly used multivariate time-series anomaly detection benchmarks:
+
+* Server Machine Dataset (SMD)
+* Pooled Server Metrics (PSM)
+* Secure Water Treatment (SWaT)
+* Mars Science Laboratory (MSL)
+* Soil Moisture Active Passive (SMAP)
+
+The datasets are **not included in this repository**.
+
+Users should download the datasets from their original sources and place them in the corresponding directories.
+
+---
+
+## 1. SMD
+
+### Server Machine Dataset
+
+SMD is a multivariate time-series anomaly detection benchmark based on server telemetry.
+
+The original dataset is available through the OmniAnomaly repository:
+
+https://github.com/NetManAIOps/OmniAnomaly
+
+Download the SMD data and place it in:
+
+```text
+dataset/SMD/
+```
+
+The directory should contain the training and testing data required by the implementation.
+
+A typical organization is:
+
+```text
+dataset/
+└── SMD/
+    ├── train/
+    ├── test/
+    └── test_label/
+```
+
+Do not rename files unless the corresponding dataset loader is also changed.
+
+---
+
+## 2. PSM
+
+### Pooled Server Metrics
+
+PSM is a multivariate server-monitoring dataset released by eBay and widely used for time-series anomaly detection.
+
+Original repository:
+
+https://github.com/eBay/RANSynCoders
+
+Place the downloaded files in:
+
+```text
+dataset/PSM/
+```
+
+For example:
+
+```text
+dataset/
+└── PSM/
+    ├── train.csv
+    ├── test.csv
+    └── test_label.csv
+```
+
+---
+
+## 3. SWaT
+
+### Secure Water Treatment
+
+SWaT is an industrial control-system dataset collected from a scaled water-treatment testbed.
+
+Because SWaT has specific dataset access and distribution conditions, users should obtain the dataset from the original dataset provider.
+
+After obtaining the dataset, place the required files in:
+
+```text
+dataset/SWaT/
+```
+
+Example:
+
+```text
+dataset/
+└── SWaT/
+    └── ...
+```
+
+The dataset should not be redistributed through this repository unless permitted by the original provider.
+
+---
+
+## 4. MSL
+
+### Mars Science Laboratory
+
+MSL contains spacecraft telemetry used for anomaly detection.
+
+The data can be obtained through the Telemanom repository:
+
+https://github.com/khundman/telemanom
+
+Place the required MSL files in:
+
+```text
+dataset/MSL/
+```
+
+---
+
+## 5. SMAP
+
+### Soil Moisture Active Passive
+
+SMAP is another spacecraft telemetry dataset commonly used for multivariate time-series anomaly detection.
+
+The dataset is available through:
+
+https://github.com/khundman/telemanom
+
+Place the required SMAP files in:
+
+```text
+dataset/SMAP/
+```
+
+---
+
+# Final Dataset Structure
+
+After preparing all datasets, the repository should look like:
+
+```text
+AdaTrendLike/
+│
+├── dataset/
+│   ├── SMD/
+│   │   └── ...
+│   │
+│   ├── PSM/
+│   │   └── ...
+│   │
+│   ├── SWaT/
+│   │   └── ...
+│   │
+│   ├── MSL/
+│   │   └── ...
+│   │
+│   └── SMAP/
+│       └── ...
+│
+├── checkpoints/
+├── results/
+├── Start.sh
+├── requirements.txt
+└── README.md
+```
+
+---
+
+# Running the Code
+
+After installing the dependencies and preparing the datasets, the experiments can be started using:
+
+```bash
+bash Start.sh
+```
+
+From the repository root:
+
+```bash
+cd AdaTrendLike
+bash Start.sh
+```
+
+`Start.sh` is the main entry point for running the implementation.
+
+---
+
+# Results
+
+AdaTrendLike is evaluated on five multivariate time-series anomaly detection benchmarks:
+
+| Dataset | Description                  |
+| ------- | ---------------------------- |
+| SMD     | Server Machine Dataset       |
+| PSM     | Pooled Server Metrics        |
+| SWaT    | Secure Water Treatment       |
+| MSL     | Mars Science Laboratory      |
+| SMAP    | Soil Moisture Active Passive |
+
+The implementation evaluates anomaly detection performance using the evaluation protocol described in the paper.
+
+The reported results in the paper demonstrate the effectiveness of adaptive hierarchical detrending and trend-likelihood scoring for detecting anomalous temporal behavior.
+
+---
+
+# Method
+
+The AdaTrendLike pipeline can be summarized as:
+
+```text
+Input Time Series
+       │
+       ▼
+Standardization Embedding
+       │
+       ▼
+Adaptive Detrending
+       │
+       ▼
+Hierarchical Trend Representation
+       │
+       ▼
+Trend Distribution Estimation
+       │
+       ▼
+Trend Likelihood
+       │
+       ▼
+Anomaly Score
+```
+
+The method focuses on the likelihood of the learned temporal trend distribution rather than relying solely on point-wise deviations.
+
+---
+
+# Reproducibility
+
+For reproducible results, we recommend using:
+
+* The same benchmark datasets
+* The preprocessing procedure provided in this repository
+* The same model configuration
+* The same evaluation protocol
+* The same random seeds
+* The original train/test splits
+
+Please ensure that the datasets are prepared exactly as expected by the corresponding data loaders.
+
+---
+
+# Dataset Disclaimer
+
+The datasets used by this repository belong to their respective original creators and providers.
+
+This repository does **not** redistribute the benchmark datasets.
+
+Users are responsible for:
+
+1. Obtaining the datasets from the original sources.
+2. Following the corresponding dataset licenses and terms of use.
+3. Preparing the datasets according to the structure expected by this repository.
+
+---
+
+# Citation
+
+Please cite the following paper when using this implementation:
+
+```bibtex
+@article{koh2026adatrendlike,
+  author  = {Van Kwan Zhi Koh and Songnan Lin and Zhiping Lin and Bihan Wen},
+  title   = {AdaTrendLike: Adaptive Hierarchical Detrending and Trend Likelihood Scoring for Time Series Anomaly Detection},
+  journal = {IEEE Transactions on Industrial Informatics},
+  year    = {2026}
+}
+```
+
+Paper:
+
+https://ieeexplore.ieee.org/abstract/document/11684397
+
+---
+
+# Acknowledgements
+
+We thank the authors and maintainers of the benchmark datasets and publicly available resources used in this work.
+
+In particular, we acknowledge the resources associated with:
+
+* SMD / OmniAnomaly
+* PSM / eBay
+* SWaT
+* MSL / Telemanom
+* SMAP / Telemanom
+
+---
+
+# Contact
+
+For questions regarding the implementation or research, please refer to the paper and the corresponding repository.
+
+---
+
+## Quick Start
+
+```bash
+git clone <repository-url>
+cd AdaTrendLike
+
+conda create -n adatrendlike python=3.10
+conda activate adatrendlike
+
+pip install -r requirements.txt
+
+# Prepare datasets under:
+# dataset/SMD
+# dataset/PSM
+# dataset/SWaT
+# dataset/MSL
+# dataset/SMAP
+
+bash Start.sh
+```
