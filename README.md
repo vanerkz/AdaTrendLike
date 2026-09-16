@@ -20,12 +20,6 @@ The key idea is to explicitly model the trend component of a time series and eva
 
 Unlike methods that primarily rely on point-wise reconstruction errors, AdaTrendLike models the underlying temporal trend and derives an anomaly score from the likelihood of the observed trend.
 
-The framework consists of three main components:
-
-1. **Standardization Embedding**
-2. **Adaptive Detrending**
-3. **Trend Estimation and Trend Likelihood Scoring**
-
 The resulting model learns the distribution of normal trends and uses the corresponding likelihood to identify anomalous temporal behavior.
 
 ---
@@ -251,15 +245,6 @@ After installing the dependencies and preparing the datasets, the experiments ca
 bash Start.sh
 ```
 
-From the repository root:
-
-```bash
-cd AdaTrendLike
-bash Start.sh
-```
-
-`Start.sh` is the main entry point for running the implementation.
-
 ---
 
 # Results
@@ -277,53 +262,6 @@ AdaTrendLike is evaluated on five multivariate time-series anomaly detection ben
 The implementation evaluates anomaly detection performance using the evaluation protocol described in the paper.
 
 The reported results in the paper demonstrate the effectiveness of adaptive hierarchical detrending and trend-likelihood scoring for detecting anomalous temporal behavior.
-
----
-
-# Method
-
-The AdaTrendLike pipeline can be summarized as:
-
-```text
-Input Time Series
-       │
-       ▼
-Standardization Embedding
-       │
-       ▼
-Adaptive Detrending
-       │
-       ▼
-Hierarchical Trend Representation
-       │
-       ▼
-Trend Distribution Estimation
-       │
-       ▼
-Trend Likelihood
-       │
-       ▼
-Anomaly Score
-```
-
-The method focuses on the likelihood of the learned temporal trend distribution rather than relying solely on point-wise deviations.
-
----
-
-# Reproducibility
-
-For reproducible results, we recommend using:
-
-* The same benchmark datasets
-* The preprocessing procedure provided in this repository
-* The same model configuration
-* The same evaluation protocol
-* The same random seeds
-* The original train/test splits
-
-Please ensure that the datasets are prepared exactly as expected by the corresponding data loaders.
-
----
 
 # Dataset Disclaimer
 
@@ -369,32 +307,4 @@ In particular, we acknowledge the resources associated with:
 * SWaT
 * MSL / Telemanom
 * SMAP / Telemanom
-
----
-
-# Contact
-
-For questions regarding the implementation or research, please refer to the paper and the corresponding repository.
-
----
-
-## Quick Start
-
-```bash
-git clone <repository-url>
-cd AdaTrendLike
-
-conda create -n adatrendlike python=3.10
-conda activate adatrendlike
-
-pip install -r requirements.txt
-
-# Prepare datasets under:
-# dataset/SMD
-# dataset/PSM
-# dataset/SWaT
-# dataset/MSL
-# dataset/SMAP
-
-bash Start.sh
-```
+* Anomaly Transformer — https://github.com/thuml/Anomaly-Transformer
