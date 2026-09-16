@@ -55,7 +55,7 @@ We recommend creating a dedicated Python environment.
 For example:
 
 ```bash
-conda create -n adatrendlike python=3.10
+conda create -n adatrendlike python=3.9
 conda activate adatrendlike
 ```
 
@@ -242,22 +242,6 @@ bash Start.sh
 ```
 
 ---
-
-# Results
-
-AdaTrendLike is evaluated on five multivariate time-series anomaly detection benchmarks:
-
-| Dataset | Description                  |
-| ------- | ---------------------------- |
-| SMD     | Server Machine Dataset       |
-| PSM     | Pooled Server Metrics        |
-| SWaT    | Secure Water Treatment       |
-| MSL     | Mars Science Laboratory      |
-| SMAP    | Soil Moisture Active Passive |
-
-The implementation evaluates anomaly detection performance using the evaluation protocol described in the paper.
-
-The reported results in the paper demonstrate the effectiveness of adaptive hierarchical detrending and trend-likelihood scoring for detecting anomalous temporal behavior.
 
 # Dataset Disclaimer
 
