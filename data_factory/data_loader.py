@@ -261,9 +261,9 @@ class MSLSegLoader(Dataset):
         self.mode = mode
         self.step = step
         self.win_size = win_size
-        data = pd.DataFrame(np.load(data_path + "/MSL_train.npy")).ffill().bfill().values
-        test_data = pd.DataFrame(np.load(data_path + "/MSL_test.npy")).ffill().bfill().values
-        labels = np.load(data_path + "/MSL_test_label.npy")
+        data = pd.DataFrame(np.load(data_path + "/train.npy")).ffill().bfill().values
+        test_data = pd.DataFrame(np.load(data_path + "/test.npy")).ffill().bfill().values
+        labels = np.load(data_path + "/test_label.npy")
         self.train,self.val,self.test,self.test_labels=scalerfunc(data,test_data,labels,val_ratio,noise_ratio)
         self.dim=self.test.shape[1]
         

@@ -153,15 +153,16 @@ Because SWaT has specific dataset access and distribution conditions, users shou
 
 After obtaining the dataset, place the required files in:
 
+```text
 dataset/
 └── SWaT/
     ├── train.csv
     └── test.csv
+```
 
 The last column of each CSV file should contain the state label:
 
-Normal
-Attack
+Normal or Attack
 
 ---
 
@@ -178,7 +179,11 @@ https://github.com/khundman/telemanom
 Place the required MSL files in:
 
 ```text
-dataset/MSL/
+dataset/
+└── MSL/
+    ├── train.npy
+    ├── test.npy
+    └── test_label.npy
 ```
 
 ---
@@ -187,17 +192,33 @@ dataset/MSL/
 
 ### Soil Moisture Active Passive
 
-SMAP is another spacecraft telemetry dataset commonly used for multivariate time-series anomaly detection.
+SMAP is a spacecraft telemetry dataset commonly used for multivariate time-series anomaly detection.
 
-The dataset is available through:
+The dataset can be obtained from the official Telemanom repository:
 
 https://github.com/khundman/telemanom
 
-Place the required SMAP files in:
+After downloading the dataset, organize the SMAP files in the following directory structure:
 
 ```text
-dataset/SMAP/
+dataset/
+└── SMAP/
+    ├── train/
+    │   ├── A-1.npy
+    │   ├── A-2.npy
+    │   ├── ...
+    │
+    ├── test/
+    │   ├── A-1.npy
+    │   ├── A-2.npy
+    │   ├── ...
+    │
+    └── labeled_anomalies.csv
 ```
+
+* `train/` contains the SMAP training time-series files.
+* `test/` contains the SMAP testing time-series files.
+* `labeled_anomalies.csv` contains the anomaly labels for the test data.
 
 ---
 
