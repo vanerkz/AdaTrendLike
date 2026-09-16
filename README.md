@@ -153,19 +153,15 @@ Because SWaT has specific dataset access and distribution conditions, users shou
 
 After obtaining the dataset, place the required files in:
 
-```text
-dataset/SWaT/
-```
-
-Example:
-
-```text
 dataset/
 └── SWaT/
-    └── ...
-```
+    ├── train.csv
+    └── test.csv
 
-The dataset should not be redistributed through this repository unless permitted by the original provider.
+The last column of each CSV file should contain the state label:
+
+Normal
+Attack
 
 ---
 
