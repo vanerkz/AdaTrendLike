@@ -199,13 +199,10 @@ class Solver(object):
         predseq = (A_score_np >seqthres).astype(int)
         accuracy = accuracy_score(gt, predseq)
         precision, recall, f_score, support = precision_recall_fscore_support(gt, predseq,  average='binary')
-        seqout="TrendLike: Accuracy : {:0.2f}, Precision : {:0.2f}, Recall : {:0.2f}, F-score : {:0.2f} ".format(
+        seqout="Accuracy : {:0.2f}, Precision : {:0.2f}, Recall : {:0.2f}, F-score : {:0.2f} ".format(
                 accuracy*100, precision*100,
                 recall*100, f_score*100)
         roc=roc_auc_score(gt,A_score_np)
-        prroc=average_precision_score(gt,A_score_np)
-        seqout+="\n\n"+str(roc)
-        seqout+="\n\n"+str(prroc)
         print(seqout)
         current_path = os.getcwd()
         today = dt.datetime.now().strftime("%Y%m%d_%H%M%S")

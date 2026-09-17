@@ -37,6 +37,7 @@ def main(config):
     for i in randomseedlist:
         set_seed(i)
         config.mode='train'
+        config.randomseed=i
         solver = Solver(vars(config))
         valiscore=solver.train()
         valiscores.append(valiscore)
