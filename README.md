@@ -303,9 +303,9 @@ We thank the authors and maintainers of the benchmark datasets and publicly avai
 
 In particular, we acknowledge the resources associated with:
 
-* SMD / OmniAnomaly
-* PSM / eBay
-* SWaT
-* MSL / Telemanom
-* SMAP / Telemanom
+* SMD / OmniAnomaly — https://github.com/NetManAIOps/OmniAnomaly
+* PSM / eBay — https://github.com/eBay/RANSynCoders
+* SWaT — https://www.sutd.edu.sg/itrust/itrust-labs/datasets/dataset-characteristics/swat/
+* MSL / Telemanom — https://github.com/khundman/telemanom
+* SMAP / Telemanom — https://github.com/khundman/telemanom
 * Anomaly Transformer — https://github.com/thuml/Anomaly-Transformer
