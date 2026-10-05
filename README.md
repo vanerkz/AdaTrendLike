@@ -284,10 +284,11 @@ Please cite the following paper when using this implementation:
 
 ```bibtex
 @article{koh2026adatrendlike,
-  author  = {Van Kwan Zhi Koh and Songnan Lin and Zhiping Lin and Bihan Wen},
-  title   = {AdaTrendLike: Adaptive Hierarchical Detrending and Trend Likelihood Scoring for Time Series Anomaly Detection},
+  author  = {Koh, Van Kwan Zhi and Lin, Songnan and Luo, Rongmo and Lin, Zhiping and Wen, Bihan},
+  title   = {AdaTrendLike: Adaptive Hierarchical Detrending and Trend Likelihood Scoring for Time-Series Anomaly Detection},
   journal = {IEEE Transactions on Industrial Informatics},
-  year    = {2026}
+  year    = {2026},
+  doi     = {10.1109/TII.2026.3720380}
 }
 ```
 
